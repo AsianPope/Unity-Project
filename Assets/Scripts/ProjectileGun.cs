@@ -34,7 +34,7 @@ public class ProjectileGun : MonoBehaviour
 
     private void Awake()
     {
-        //make sure magazinge is full
+        //make sure magazine is full
         bulletsLeft = magazineSize;
         readyToShoot = true;
     }
@@ -42,6 +42,10 @@ public class ProjectileGun : MonoBehaviour
     private void Update()
     {
         MyInput();
+
+        //set ammo display, if it exists :3
+        if (ammunitionDisplay != null)
+            ammunitionDisplay.SetText(bulletsLeft / bulletsPerTap + "/" + magazineSize / bulletsPerTap);
     }
 
     private void MyInput()
@@ -76,7 +80,7 @@ public class ProjectileGun : MonoBehaviour
         Vector3 targetPoint;
         if (Physics.Raycast(ray, out hit))
             targetPoint = hit.point;
-        elsetargetPoint = ray.GetPoint(75);//a point far away from player
+        else targetPoint = ray.GetPoint(75);//a point far away from player
 
         //Calculate direction from attackPoint to targetPoint
         Vector3 directionWithoutSpread = targetPoint - attackPoint.position;
@@ -90,6 +94,10 @@ public class ProjectileGun : MonoBehaviour
         currentBullet.GetComponent<Rigidbody>().AddForce(directionWithoutSpread.normalized * shootForce, ForceMode.Impulse);
         currentBullet.GetComponent<Rigidbody>().AddForce(fpsCam.transform.up * upwardForce, ForceMode.Impulse);
 
+        //Instantiate muzzle flash
+        if (muzzleFlash != null)
+            Instantiate(muzzleFlash, attackPoint.position, Quaternion.identity);
+
         bulletsLeft--;
         bulletsShot++;
 
@@ -101,7 +109,7 @@ public class ProjectileGun : MonoBehaviour
         }
 
         //if more than one bulletsPerTap make sure to repeat shoot function
-        if (bulletsShot < bulletsShotPerTap && bulletsLeft > 0)
+        if (bulletsShot < bulletsPerTap && bulletsLeft > 0)
             Invoke("Shoot", timeBetweenShots);
     }
 
