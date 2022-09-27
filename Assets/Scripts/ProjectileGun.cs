@@ -18,6 +18,10 @@ public class ProjectileGun : MonoBehaviour
 
     int bulletsLeft, bulletsShot;
 
+    //recoil
+    public Rigidbody playerRB;
+    public float recoilForce;
+
     //bools
     bool shooting, readyToShoot, reloading;
 
@@ -85,6 +89,9 @@ public class ProjectileGun : MonoBehaviour
         //Calculate direction from attackPoint to targetPoint
         Vector3 directionWithoutSpread = targetPoint - attackPoint.position;
 
+        //spread
+        //Vector3 directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0);
+
         //Instantiate bullet/projectile
         GameObject currentBullet = Instantiate(bullet, attackPoint.position, Quaternion.identity);
         //rotate bullet to shoot direction
@@ -93,6 +100,9 @@ public class ProjectileGun : MonoBehaviour
         //add forces to bullet
         currentBullet.GetComponent<Rigidbody>().AddForce(directionWithoutSpread.normalized * shootForce, ForceMode.Impulse);
         currentBullet.GetComponent<Rigidbody>().AddForce(fpsCam.transform.up * upwardForce, ForceMode.Impulse);
+
+        //add recoil to player
+        playerRB.AddForce(directionWithoutSpread.normalized * recoilForce, ForceMode.Impulse);
 
         //Instantiate muzzle flash
         if (muzzleFlash != null)
