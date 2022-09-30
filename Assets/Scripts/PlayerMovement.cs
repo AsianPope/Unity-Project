@@ -4,102 +4,43 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    Rigidbody rd;
+    public CharacterController controller;
 
-    bool moveLeft;
-    bool moveRight;
-    bool moveForward;
-    bool moveBackward;
-    float horizontalMove;
-    float verticalMove;
-    public float speed = 300;
+    public float speed = 12f;
+    public float gravity = -9.81f;
+    public float jumpHeight = 3f;
 
-    // Start is called before the first frame update
-    void Start()
+    public Transform groundCheck;
+    public float groundDistance = 0.4f;
+    public LayerMask groundMask;
+
+    Vector3 velocity;
+
+    bool isGrounded;
+
+    void Update()
     {
-        rd = GetComponent<Rigidbody>();
-    }
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-    // left button
-    public void PointerDownLeft()
-    {
-        moveLeft = true;
-    }
-
-    public void PointerUpLeft()
-    {
-        moveLeft = false;
-    }
-
-    //right button
-    public void PointerDownRight()
-    {
-        moveRight = true;
-    }
-
-    public void PointerUpRight()
-    {
-        moveRight = false;
-    }
-
-    //forward button
-    public void PointerDownForward()
-    {
-        moveForward = true;
-    }
-
-    public void PointerUpForward()
-    {
-        moveForward = false;
-    }
-
-    //backward button
-    public void PointerDownBackward()
-    {
-        moveBackward = true;
-    }
-
-    public void PointerUpBackward()
-    {
-        moveBackward = false;
-    }
-
-    private void Update()
-    {
-        Movement();
-    }
-
-    void Movement()
-    {
-        if (moveLeft)
+        if(isGrounded && velocity.y < 0)
         {
-            horizontalMove = -speed;
-        }
-        else if (moveRight)
-        {
-            horizontalMove = speed;
-        }
-        else
-        {
-            horizontalMove = 0;
+            velocity.y = -2f;
         }
 
-        if (moveForward)
-        {
-            verticalMove = speed;
-        }
-        else if (moveBackward)
-        {
-            verticalMove = -speed;
-        }
-        else
-        {
-            verticalMove = 0;
-        }
-    }
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
 
-    private void FixedUpdate()
-    {
-        rd.velocity = new Vector3(horizontalMove * Time.deltaTime, rd.velocity.y, verticalMove * Time.deltaTime);
+        Vector3 move = transform.right * x + transform.forward * z;
+
+        controller.Move(move * speed * Time.deltaTime);
+
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        }
+
+        velocity.y += gravity * Time.deltaTime;
+
+        controller.Move(velocity * Time.deltaTime);
     }
 }
