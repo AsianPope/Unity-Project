@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CustomBullet : MonoBehaviour
@@ -17,6 +15,7 @@ public class CustomBullet : MonoBehaviour
     //Damage
     public int explosionDamage;
     public float explosionRange;
+    public float explosionForce;
 
     //Lifetime
     public int maxCollisions;
@@ -38,7 +37,10 @@ public class CustomBullet : MonoBehaviour
 
         //Count down lifetime
         maxLifeTime -= Time.deltaTime;
-        if (maxLifeTime <= 0) Explode();
+        if (maxLifeTime <= 0)
+        {
+            Explode();
+        }
     }
 
     private void Explode()
@@ -53,7 +55,16 @@ public class CustomBullet : MonoBehaviour
             //Get component of enemy and call Take Damage
 
             //example
-            //enemies[i].GetComponent<ShootingAi>().TakeDamage(explosionDamage);
+            if(enemies[i].GetComponent<Target>())
+            {
+                enemies[i].GetComponent<Target>().TakeDamage(explosionDamage);
+            }
+
+            //adds explosion force
+            if (enemies[i].GetComponent<Rigidbody>())
+            {
+                enemies[i].GetComponent<Rigidbody>().AddExplosionForce(explosionForce, transform.position, explosionRange);
+            }
         }
 
         //add a little delay, just to make everything works good

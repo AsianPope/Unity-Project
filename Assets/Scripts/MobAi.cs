@@ -28,7 +28,7 @@ public class MobAi : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.Find("FirstPersonController").transform;
+        player = GameObject.Find("First Person Controller").transform;
         agent = GetComponent<NavMeshAgent>();
     }
 
