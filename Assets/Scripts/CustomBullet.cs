@@ -55,10 +55,10 @@ public class CustomBullet : MonoBehaviour
             //Get component of enemy and call Take Damage
 
             //example
-            if(enemies[i].GetComponent<Target>())
-            {
-                enemies[i].GetComponent<Target>().TakeDamage(explosionDamage);
-            }
+            //if(enemies[i].GetComponent<Target>())
+            //{
+            //    enemies[i].GetComponent<Target>().TakeDamage(explosionDamage);
+            //}
 
             //adds explosion force
             if (enemies[i].GetComponent<Rigidbody>())
